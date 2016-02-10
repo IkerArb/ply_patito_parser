@@ -89,43 +89,108 @@ precedence = (
 # dictionary of names
 names = { }
 
-def p_statement_assign(p):
-    'statement : NAME "=" expression'
-    names[p[1]] = p[3]
+def p_programa(p):
+    'programa : PROG ID ";" v bloque'
+    print('done with file!\n')
 
-def p_statement_expr(p):
-    'statement : expression'
-    print(p[1])
+def p_v(p):
+    ''' v : empty
+          | vars'''
 
-def p_expression_binop(p):
-    '''expression : expression '+' expression
-                  | expression '-' expression
-                  | expression '*' expression
-                  | expression '/' expression'''
-    if p[2] == '+'  : p[0] = p[1] + p[3]
-    elif p[2] == '-': p[0] = p[1] - p[3]
-    elif p[2] == '*': p[0] = p[1] * p[3]
-    elif p[2] == '/': p[0] = p[1] / p[3]
+def p_vars(p):
+    'vars : VAR a'
 
-def p_expression_uminus(p):
-    "expression : '-' expression %prec UMINUS"
-    p[0] = -p[2]
+def p_a(p):
+    'a : b ":" tipo ";" f'
 
-def p_expression_group(p):
-    "expression : '(' expression ')'"
-    p[0] = p[2]
+def p_f(p):
+    ''' f : empty
+          | a'''
 
-def p_expression_number(p):
-    "expression : NUMBER"
-    p[0] = p[1]
+def p_b(p):
+    'b : ID c'
 
-def p_expression_name(p):
-    "expression : NAME"
-    try:
-        p[0] = names[p[1]]
-    except LookupError:
-        print("Undefined name '%s'" % p[1])
-        p[0] = 0
+def p_c(p):
+    '''c : empty
+         | "," b '''
+
+def p_tipo(p):
+    '''tipo : INT
+            | FLOAT'''
+
+def p_bloque(p):
+    'bloque : "{" d "}"'
+    print('bloque codificado exitosamente\n')
+
+def p_d(p):
+    '''d : empty
+         | estatuto d'''
+
+def p_estatuto(p):
+    '''estatuto : asignacion
+                | condicion
+                | escritura'''
+
+def p_asignacion(p):
+    'asignacion : ID "=" expresion ";"
+    print('se asignó la variable '+ p[1])
+
+def p_expresion(p):
+    'expresion : exp i'
+
+def p_i(p):
+    '''i : empty
+         | ">" exp
+         | "<" exp
+         | NOTEQ exp'''
+
+def p_escritura(p):
+    'escritura : PRINT "(" g ")" ";"'
+
+def p_g(p):
+    '''g : expresion h
+         | CTES h'''
+
+def p_h(p):
+    '''h: empty
+        | "," g'''
+
+def p_exp(p):
+    'exp : termino k'
+
+def p_k(p):
+    '''k : empty
+         | "+" exp
+         | "-" exp'''
+
+def p_factor(p):
+    '''factor : "(" expresion ")"
+              | m varcte'''
+
+def p_m(p):
+    '''m : empty
+         | "+"
+         | "-"'''
+
+def p_condicion(p):
+    'condicion : IF "(" expresion ")" bloque j ";"'
+
+def p_j(p):
+    '''j : empty
+         | ELSE bloque'''
+
+def p_termino(p):
+    'termino : factor l'
+
+def p_l(p):
+    '''l : empty
+         | "*" termino
+         | "/" termino'''
+
+def p_varcte(p):
+    '''varcte : ID
+              | CTEED
+              | CTEF'''
 
 def p_error(p):
     if p:
