@@ -1,36 +1,74 @@
 # -----------------------------------------------------------------------------
-# calc.py
+# patito.py
 #
-# A simple calculator with variables.   This is from O'Reilly's
-# "Lex and Yacc", p. 63.
+# Un simple parser para la clase de compiladores.
+# Basado en el ejemplo de calc.py de la librería ply v 3.8
 # -----------------------------------------------------------------------------
 
 import sys
-sys.path.insert(0,"../..")
 
 if sys.version_info[0] >= 3:
     raw_input = input
 
 tokens = (
-    'NAME','NUMBER',
+    'PROG','IF','THEN','ELSE','PROC','END','INT','FLOAT',
+    'WHILE','READ','PRINT','VAR','NOTEQ','LTEQ','GTEQ',
+    'CTES','COMMENT','ID','CTEED','CTEEB','CTEEH','CTEF',
     )
 
-literals = ['=','+','-','*','/', '(',')']
+literals = ['=','+','-','*','/', '(',')','{','}',':',',',';','>','<']
 
 # Tokens
 
-t_NAME    = r'[a-zA-Z_][a-zA-Z0-9_]*'
+t_PROG = r'PROG'
+t_IF = r'IF'
+t_THEN = r'THEN'
+t_ELSE = r'ELSE'
+t_PROC = r'PROC'
+t_END = r'END'
+t_INT = r'INT'
+t_FLOAT = r'FLOAT'
+t_WHILE = r'WHILE'
+t_READ = r'READ'
+t_PRINT = r'PRINT'
+t_VAR = r'VAR'
+t_NOTEQ = r'<>'
+t_LTEQ = r'<='
+t_GTEQ = r'>='
 
-def t_NUMBER(t):
-    r'\d+'
+def t_CTES(t):
+    r'\"[^\n"]*\"'
+    return t
+
+t_ignore = " \t\n"
+
+def t_COMMENT(t):
+    r'\/\*([^*]|\n|[*][^\/])*\*\/'
+    return t
+
+def t_ID(t):
+    r'[A-Za-z]([_]?([a-zA-Z]|[0-9]))*'
+    return t
+
+def t_CTEED(t):
+    r'[0-9]+'
     t.value = int(t.value)
     return t
 
-t_ignore = " \t"
+def t_CTEEB(t):
+    r'(0|1)+b'
+    return t
 
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += t.value.count("\n")
+def t_CTEEH(t):
+    r'[0-9]+[a-fA-F0-9]*[hH]'
+    return t
+
+def t_CTEF(t):
+    r'[0-9]+([eE]([+]|[-])?|[.][0-9]+[eE]([+]|[-])?|[.])[0-9]+'
+    t.value = float(t.value)
+    return t
+
+
 
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
