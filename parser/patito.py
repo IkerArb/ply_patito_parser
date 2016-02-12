@@ -264,10 +264,7 @@ def p_error(p):
 import ply.yacc as yacc
 yacc.yacc()
 
-while 1:
-    try:
-        s = raw_input('calc > ')
-    except EOFError:
-        break
-    if not s: continue
-    yacc.parse(s)
+f = open(str(sys.argv[1]), 'r')
+s = f.read()
+f.close()
+yacc.parse(s)
