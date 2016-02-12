@@ -1,5 +1,5 @@
 PROG prueba_1;
-VAR nombre69 : FLOAT;
+VAR nombre69 : ;
 {
   nombre69 = 69.34 +;
 }
